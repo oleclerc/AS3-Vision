@@ -24,6 +24,7 @@ package
 			
 			ret_corners = new Vector.<Point>();
 			
+			//Create 2D vector for image pixels, using only the blue channel (will work with greyscale images)
 			var image:Vector.<Vector.<uint>> = new Vector.<Vector.<uint>>(im.height);
 			for (y = 0; y < im.height; y++)
 			{
@@ -35,10 +36,10 @@ package
 				}
 			}
 			
-			var xsize:int = im.width;
-			var ysize:int = im.height;
-			for(y = 3; y < ysize - 3; y++)
-				for(x = 3; x < xsize - 3; x++)
+			var xsize:int = im.width - 3;
+			var ysize:int = im.height - 3;
+			for(y = 3; y < ysize; y++)
+				for(x = 3; x < xsize; x++)
 				{
 					
 				var cb:int = image[y][x] + threshold;
