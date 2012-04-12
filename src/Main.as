@@ -87,6 +87,9 @@ package
 			for each (var p:Point in features)
 			{
 				descriptor.DescribeFeature(input, p);
+			}
+			for each (var p:Point in features)
+			{
 				input.fillRect(new Rectangle(p.x - 1, p.y - 1, 2, 2), 0xff0000);
 			}
 			
