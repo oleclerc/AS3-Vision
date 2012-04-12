@@ -27,6 +27,8 @@ package
 		private var inputImage:BitmapData;
 		private var video:Video;
 		
+		private var descriptor:DescriptorTest = new DescriptorTest();
+		
 		public function Main():void 
 		{
 			if (stage) init();
@@ -84,6 +86,7 @@ package
 			
 			for each (var p:Point in features)
 			{
+				descriptor.DescribeFeature(input, p);
 				input.fillRect(new Rectangle(p.x - 1, p.y - 1, 2, 2), 0xff0000);
 			}
 			

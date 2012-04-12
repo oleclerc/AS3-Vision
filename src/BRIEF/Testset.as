@@ -27,10 +27,8 @@ package BRIEF
 			
 			for (var i:int = 0; i < nbTests; i++)
 			{
-				testP1[i].x = Math.round(Math.random() * 9) - 5;
-				testP1[i].y = Math.round(Math.random() * 9) - 5;
-				testP2[i].x = Math.round(Math.random() * 9) - 5;
-				testP2[i].y = Math.round(Math.random() * 9) - 5;
+				testP1[i] = new Point(Math.round(Math.random() * 9) - 5, Math.round(Math.random() * 9) - 5);
+				testP2[i] = new Point(Math.round(Math.random() * 9) - 5, Math.round(Math.random() * 9) - 5);
 			}
 		}
 		
