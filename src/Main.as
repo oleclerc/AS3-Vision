@@ -84,11 +84,12 @@ package
 			
 			var features:Vector.<Point> = DetectFeatures(input);
 			
-			for each (var p:Point in features)
+			var p:Point;
+			for each (p in features)
 			{
 				descriptor.DescribeFeature(input, p);
 			}
-			for each (var p:Point in features)
+			for each (p in features)
 			{
 				input.fillRect(new Rectangle(p.x - 1, p.y - 1, 2, 2), 0xff0000);
 			}
