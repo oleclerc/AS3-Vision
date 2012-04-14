@@ -21,10 +21,12 @@ package
 	 */
 	public class Main extends Sprite 
 	{
+		private var WebcamResX:Param = new Param("WebcamResX", 640);
+		private var WebcamResY:Param = new Param("WebcamResY", 480);
 		private var ImageWidth:Param = new Param("ImageWidth", 320);
 		private var ImageHeight:Param = new Param("ImageHeight", 240);
 		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40);
-		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 150);
+		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 130);
 		
 		private var imgSource:SourceWebcam
 		private var inputImage:BitmapData;
@@ -46,11 +48,13 @@ package
 			stage.addEventListener(Event.ENTER_FRAME, OnEnterFrame);
 			
 			//Create image source
-			imgSource = new SourceWebcam(640, 480, ImageWidth.value, ImageHeight.value);
+			imgSource = new SourceWebcam(WebcamResX.value, WebcamResY.value, ImageWidth.value, ImageHeight.value);
 			addChild(imgSource);
 			
 			//Create overlay
 			overlay = new Sprite();
+			overlay.scaleX = WebcamResX.value / ImageWidth.value;
+			overlay.scaleY = WebcamResY.value / ImageHeight.value;
 			addChild(overlay);
 		}
 		
