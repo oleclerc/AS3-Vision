@@ -13,6 +13,7 @@ package
 	import flash.media.Camera;
 	import flash.media.Video;
 	import flash.net.URLRequest;
+	import ImageSource.SourceWebcam;
 	
 	/**
 	 * ...
@@ -25,11 +26,12 @@ package
 		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40);
 		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 150);
 		
+		private var imgSource:SourceWebcam
 		private var inputImage:BitmapData;
 		private var overlay:Sprite;
-		private var video:Video;
 		
 		private var descriptor:DescriptorTest = new DescriptorTest();
+		private var prevFeatures:Vector.<Feature> = null;
 		
 		public function Main():void 
 		{
@@ -40,28 +42,21 @@ package
 		private function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-			// entry point
 			
 			stage.addEventListener(Event.ENTER_FRAME, OnEnterFrame);
 			
-			var cam:Camera = Camera.getCamera();
-			cam.setMode(640, 480, 30, false);
-			video = new Video(ImageWidth.value, ImageHeight.value);
-			video.attachCamera(cam);
-			video.filters = [new BlurFilter(2, 2, 1)];
-			//addChild(video);
-			inputImage = new BitmapData(ImageWidth.value, ImageHeight.value, false);
-			addChild(new Bitmap(inputImage));
+			//Create image source
+			imgSource = new SourceWebcam(640, 480, ImageWidth.value, ImageHeight.value);
+			addChild(imgSource);
+			
+			//Create overlay
 			overlay = new Sprite();
 			addChild(overlay);
-			//var loader:Loader = new Loader();
-			//loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnImageLoaded);
-			//loader.load(new URLRequest("test.jpg"));
 		}
 		
 		private function OnEnterFrame(e:Event):void
 		{
-			inputImage.draw(video);
+			inputImage = imgSource.GetCurrentFrame();
 			
 			var nbFeatures:int = Process(inputImage);
 			trace("Threshold: " + Fast9Threshold.value + " NbFeatures: " + nbFeatures);
@@ -75,57 +70,32 @@ package
 			}
 		}
 		
-		/*private function OnImageLoaded(e:Event):void
-		{
-			var data:BitmapData = e.target.content.bitmapData;
-			Process(data);
-		}*/
-		
-		private var prevFeatures:Vector.<Feature> = null;
 		private function Process(input:BitmapData):int
 		{
-			//var scaledImg:BitmapData = PrepareImage(input);
-			
 			var features:Vector.<Feature> = DetectFeatures(input);
 			
-			if (prevFeatures != null)
+			DescribeFeatures(input, features);
+			
+			//cutoff if too many features, to avoid lag when debugging
+			if (prevFeatures != null && prevFeatures.length < 300 && features.length < 300)
 			{
-				//Compute descriptors
-				for each (var f:Feature in features)
-				{
-					descriptor.DescribeFeature(input, f);
-				}
+				//Match previous frame features with current frame features
+				MatchBruteforce.Match(prevFeatures, features);
 				
-				if (features.length < 300)
-				{
-					//Match previous frame features with current frame features
-					MatchBruteforce.Match(prevFeatures, features);
-					
-					//Render features in red and their match in green
-					overlay.graphics.clear();
-					overlay.graphics.lineStyle(1, 0xff0000);
-					for each (f in features)
-					{
-						overlay.graphics.drawCircle(f.pos.x, f.pos.y, f.consecutiveMatches);
-						overlay.graphics.moveTo(f.pos.x, f.pos.y);
-						if (f.match != null)
-							overlay.graphics.lineTo(f.match.pos.x, f.match.pos.y);
-					}
-				}
+				RenderOverlay(features);
 			}
 			
-			prevFeatures = features;
+			this.prevFeatures = features;
 			return features.length;
 		}
 		
-		private function PrepareImage(source:BitmapData):BitmapData
+		private function DescribeFeatures(image:BitmapData, features:Vector.<Feature>):void
 		{
-			var img:BitmapData = new BitmapData(ImageWidth.value, ImageHeight.value, false);
-			var scale:Matrix = new Matrix();
-			scale.scale(ImageWidth.value / source.width, ImageHeight.value / source.height);
-			img.draw(source, scale);
-			
-			return img;
+			//Compute descriptors
+			for each (var f:Feature in features)
+			{
+				descriptor.DescribeFeature(image, f);
+			}
 		}
 		
 		private function DetectFeatures(img:BitmapData):Vector.<Feature>
@@ -146,11 +116,23 @@ package
 			}
 			
 			//Detect
-			var features:Vector.<Feature>;
-			features = Fast9Detector.Detect(blueScale, Fast9Threshold.value);
+			var features:Vector.<Feature> = Fast9Detector.Detect(blueScale, Fast9Threshold.value);
 			return features;
 		}
 		
+		//Render features in red and their match in green
+		private function RenderOverlay(features:Vector.<Feature>):void
+		{
+			overlay.graphics.clear();
+			overlay.graphics.lineStyle(1, 0xff0000);
+			for each (var f:Feature in features)
+			{
+				overlay.graphics.drawCircle(f.pos.x, f.pos.y, f.consecutiveMatches);
+				overlay.graphics.moveTo(f.pos.x, f.pos.y);
+				if (f.match != null)
+					overlay.graphics.lineTo(f.match.pos.x, f.match.pos.y);
+			}
+		}
 		
 	}
 	
