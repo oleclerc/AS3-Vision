@@ -15,14 +15,14 @@ package
 			
 		}
 		
-		public static function Detect(im:BitmapData, threshold:int):Vector.<Point>
+		public static function Detect(im:BitmapData, threshold:int):Vector.<Feature>
 		{
 			var num_corners:int = 0;
-			var ret_corners:Vector.<Point>;
+			var ret_corners:Vector.<Feature>;
 			var rsize:int = 512;
 			var x:int, y:int;
 			
-			ret_corners = new Vector.<Point>();
+			ret_corners = new Vector.<Feature>();
 			
 			//Create 2D vector for image pixels, using only the blue channel (will work with greyscale images)
 			var image:Vector.<Vector.<uint>> = new Vector.<Vector.<uint>>(im.height);
@@ -2945,8 +2945,10 @@ package
 				   continue;
 				 else
 				  continue;
-					
-				ret_corners.push(new Point(x,y));
+				
+				var f:Feature = new Feature();
+				f.pos = new Point(x, y);
+				ret_corners.push(f);
 			}
 			
 			return ret_corners;

@@ -1,5 +1,6 @@
 package 
 {
+	import BRIEF.Descriptor;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -21,10 +22,11 @@ package
 	{
 		private var ImageWidth:Param = new Param("ImageWidth", 320);
 		private var ImageHeight:Param = new Param("ImageHeight", 240);
-		private var Fast9Threshold:Param = new Param("Fast9Threshold", 30);
-		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 1000);
+		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40);
+		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 150);
 		
 		private var inputImage:BitmapData;
+		private var overlay:Sprite;
 		private var video:Video;
 		
 		private var descriptor:DescriptorTest = new DescriptorTest();
@@ -46,11 +48,12 @@ package
 			cam.setMode(640, 480, 30, false);
 			video = new Video(ImageWidth.value, ImageHeight.value);
 			video.attachCamera(cam);
-			video.filters = [new BlurFilter(3, 3, 1)];
+			video.filters = [new BlurFilter(2, 2, 1)];
 			//addChild(video);
 			inputImage = new BitmapData(ImageWidth.value, ImageHeight.value, false);
 			addChild(new Bitmap(inputImage));
-			
+			overlay = new Sprite();
+			addChild(overlay);
 			//var loader:Loader = new Loader();
 			//loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnImageLoaded);
 			//loader.load(new URLRequest("test.jpg"));
@@ -78,22 +81,40 @@ package
 			Process(data);
 		}*/
 		
+		private var prevFeatures:Vector.<Feature> = null;
 		private function Process(input:BitmapData):int
 		{
 			//var scaledImg:BitmapData = PrepareImage(input);
 			
-			var features:Vector.<Point> = DetectFeatures(input);
+			var features:Vector.<Feature> = DetectFeatures(input);
 			
-			var p:Point;
-			for each (p in features)
+			if (prevFeatures != null)
 			{
-				descriptor.DescribeFeature(input, p);
-			}
-			for each (p in features)
-			{
-				input.fillRect(new Rectangle(p.x - 1, p.y - 1, 2, 2), 0xff0000);
+				//Compute descriptors
+				for each (var f:Feature in features)
+				{
+					descriptor.DescribeFeature(input, f);
+				}
+				
+				if (features.length < 300)
+				{
+					//Match previous frame features with current frame features
+					MatchBruteforce.Match(prevFeatures, features);
+					
+					//Render features in red and their match in green
+					overlay.graphics.clear();
+					overlay.graphics.lineStyle(1, 0xff0000);
+					for each (f in features)
+					{
+						overlay.graphics.drawCircle(f.pos.x, f.pos.y, f.consecutiveMatches);
+						overlay.graphics.moveTo(f.pos.x, f.pos.y);
+						if (f.match != null)
+							overlay.graphics.lineTo(f.match.pos.x, f.match.pos.y);
+					}
+				}
 			}
 			
+			prevFeatures = features;
 			return features.length;
 		}
 		
@@ -107,7 +128,7 @@ package
 			return img;
 		}
 		
-		private function DetectFeatures(img:BitmapData):Vector.<Point>
+		private function DetectFeatures(img:BitmapData):Vector.<Feature>
 		{
 			if (img.width != ImageWidth.value || img.height != ImageHeight.value)
 				throw new Error("Image must be of the right size");
@@ -125,7 +146,7 @@ package
 			}
 			
 			//Detect
-			var features:Vector.<Point>;
+			var features:Vector.<Feature>;
 			features = Fast9Detector.Detect(blueScale, Fast9Threshold.value);
 			return features;
 		}
