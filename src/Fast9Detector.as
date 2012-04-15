@@ -19,7 +19,6 @@ package
 		{
 			var num_corners:int = 0;
 			var ret_corners:Vector.<Feature>;
-			var rsize:int = 512;
 			var x:int, y:int;
 			
 			ret_corners = new Vector.<Feature>();
@@ -36,10 +35,10 @@ package
 				}
 			}
 			
-			var xsize:int = im.width - 3;
-			var ysize:int = im.height - 3;
-			for(y = 3; y < ysize; y++)
-				for(x = 3; x < xsize; x++)
+			var xsize:int = im.width - 5;
+			var ysize:int = im.height - 5;
+			for(y = 5; y < ysize; y++)
+				for(x = 5; x < xsize; x++)
 				{
 					
 				var cb:int = image[y][x] + threshold;

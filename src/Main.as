@@ -56,6 +56,11 @@ package
 			overlay.scaleX = WebcamResX.value / ImageWidth.value;
 			overlay.scaleY = WebcamResY.value / ImageHeight.value;
 			addChild(overlay);
+			
+			//Show testset rendering
+			descriptor.x = 700;
+			descriptor.y = 60;
+			addChild(descriptor);
 		}
 		
 		private function OnEnterFrame(e:Event):void
@@ -131,7 +136,7 @@ package
 			overlay.graphics.lineStyle(1, 0xff0000);
 			for each (var f:Feature in features)
 			{
-				overlay.graphics.drawCircle(f.pos.x, f.pos.y, f.consecutiveMatches);
+				//overlay.graphics.drawCircle(f.pos.x, f.pos.y, f.consecutiveMatches);
 				overlay.graphics.moveTo(f.pos.x, f.pos.y);
 				if (f.match != null)
 					overlay.graphics.lineTo(f.match.pos.x, f.match.pos.y);

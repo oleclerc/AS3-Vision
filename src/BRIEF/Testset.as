@@ -1,5 +1,6 @@
 package BRIEF 
 {
+	import flash.display.Graphics;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -7,6 +8,8 @@ package BRIEF
 	 */
 	public class Testset 
 	{
+		private var KernelSize:Param = new Param("KernelSize", 11);
+		
 		//Two lists of pixels to be compared around center (P1-P2)
 		public var testP1:Vector.<Point>;
 		public var testP2:Vector.<Point>;
@@ -27,12 +30,24 @@ package BRIEF
 			
 			for (var i:int = 0; i < nbTests; i++)
 			{
-				testP1[i] = new Point(Math.round(Math.random() * 9) - 5, Math.round(Math.random() * 9) - 5);
-				testP2[i] = new Point(Math.round(Math.random() * 9) - 5, Math.round(Math.random() * 9) - 5);
+				testP1[i] = new Point(RandomInKernel(), RandomInKernel());
+				testP2[i] = new Point(RandomInKernel(), RandomInKernel());
 			}
 		}
 		
-		//TODO method to render the testset visually (for demo/debugging)
+		private function RandomInKernel():int
+		{
+			return Math.round(Math.random() * (KernelSize.value-1)) - (KernelSize.value / 2);
+		}
+		
+		public function Render(target:Graphics, scale:int = 1):void
+		{
+			for (var i:int = 0; i < testP1.length; i++)
+			{
+				target.moveTo(testP1[i].x * scale, testP1[i].y * scale);
+				target.lineTo(testP2[i].x * scale, testP2[i].y * scale);
+			}
+		}
 		
 	}
 

@@ -12,13 +12,18 @@ package
 	 */
 	public class DescriptorTest extends Sprite
 	{
-		private var BRIEFSize:Param = new Param("BRIEFsize", 256);
+		private var BRIEFSize:Param = new Param("BRIEFsize", 64);
 		
 		private var testset:Testset = new Testset();
 		
 		public function DescriptorTest() 
 		{
 			testset.InitRandom(BRIEFSize.value);
+			
+			var ts:Sprite = new Sprite();
+			ts.graphics.lineStyle(1);
+			testset.Render(ts.graphics, 5);
+			addChild(ts);
 		}
 		
 		public function DescribeFeature(bmp:BitmapData, feature:Feature):void
