@@ -4,6 +4,7 @@ package
 	import Detector.Fast9Detector;
 	import General.Feature
 	import General.Param;
+	import General.Util;
 	import Matcher.MatchBruteforce;
 	
 	import flash.display.Bitmap;
