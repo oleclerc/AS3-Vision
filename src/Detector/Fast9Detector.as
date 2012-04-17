@@ -1,8 +1,9 @@
-package  
+package Detector
 {
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import General.Feature;
 	/**
 	 * ...
 	 * @author Olivier Leclerc

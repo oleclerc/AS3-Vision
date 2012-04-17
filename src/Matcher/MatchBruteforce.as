@@ -1,6 +1,7 @@
-package  
+package Matcher
 {
 	import flash.geom.Point;
+	import General.Feature;
 	/**
 	 * ...
 	 * @author Olivier Leclerc

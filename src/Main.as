@@ -1,6 +1,11 @@
 package 
 {
-	import BRIEF.Descriptor;
+	import Descriptor.BRIEFDescriptor;
+	import Detector.Fast9Detector;
+	import General.Feature
+	import General.Param;
+	import Matcher.MatchBruteforce;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -28,11 +33,11 @@ package
 		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40);
 		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 130);
 		
+		
 		private var imgSource:SourceWebcam
 		private var inputImage:BitmapData;
 		private var overlay:Sprite;
 		
-		private var descriptor:DescriptorTest = new DescriptorTest();
 		private var prevFeatures:Vector.<Feature> = null;
 		
 		public function Main():void 
@@ -57,10 +62,15 @@ package
 			overlay.scaleY = WebcamResY.value / ImageHeight.value;
 			addChild(overlay);
 			
+			//Init testset
+			BRIEFDescriptor.testset.InitRandom(BRIEFDescriptor.BRIEFSize.value);
+			
 			//Show testset rendering
-			descriptor.x = 700;
-			descriptor.y = 60;
-			addChild(descriptor);
+			var ts:Sprite = new Sprite();
+			ts.graphics.lineStyle(1);
+			BRIEFDescriptor.testset.Render(ts.graphics, 5);
+			addChild(ts);
+			
 		}
 		
 		private function OnEnterFrame(e:Event):void
@@ -103,7 +113,7 @@ package
 			//Compute descriptors
 			for each (var f:Feature in features)
 			{
-				descriptor.DescribeFeature(image, f);
+				BRIEFDescriptor.DescribeFeature(image, f);
 			}
 		}
 		

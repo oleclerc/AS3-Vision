@@ -1,6 +1,6 @@
-package  
+package General 
 {
-	import BRIEF.Descriptor;
+	import Descriptor.BRIEFDescriptor;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -9,7 +9,7 @@ package
 	public class Feature 
 	{
 		public var pos:Point;
-		public var descriptor:Descriptor;
+		public var descriptor:BRIEFDescriptor;
 		public var match:Feature;
 		public var consecutiveMatches:int = 1;
 		
