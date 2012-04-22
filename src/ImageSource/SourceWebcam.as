@@ -6,6 +6,7 @@ package ImageSource
 	import flash.geom.Matrix;
 	import flash.media.Camera;
 	import flash.media.Video;
+	import General.Param;
 	/**
 	 * ...
 	 * @author Olivier Leclerc

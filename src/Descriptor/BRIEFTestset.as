@@ -1,12 +1,13 @@
-package BRIEF 
+package Descriptor 
 {
 	import flash.display.Graphics;
 	import flash.geom.Point;
+	import General.Param;
 	/**
 	 * ...
 	 * @author Olivier Leclerc
 	 */
-	public class Testset 
+	public class BRIEFTestset 
 	{
 		private var KernelSize:Param = new Param("KernelSize", 11);
 		
@@ -14,7 +15,7 @@ package BRIEF
 		public var testP1:Vector.<Point>;
 		public var testP2:Vector.<Point>;
 		
-		public function Testset() 
+		public function BRIEFTestset() 
 		{
 			
 		}
