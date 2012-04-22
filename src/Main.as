@@ -33,10 +33,10 @@ package
 	{
 		private var WebcamResX:Param = new Param("WebcamResX", 640);
 		private var WebcamResY:Param = new Param("WebcamResY", 480);
-		private var ImageWidth:Param = new Param("ImageWidth", 320);
-		private var ImageHeight:Param = new Param("ImageHeight", 240);
-		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40);
-		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 160);
+		private var ImageWidth:Param = new Param("ImageWidth", 280);
+		private var ImageHeight:Param = new Param("ImageHeight", 210);
+		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40, 5, 140);
+		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 200, 20, 1000);
 		
 		
 		private var imgSource:SourceWebcam
@@ -80,12 +80,12 @@ package
 			BRIEFDescriptor.testset.InitRandom(BRIEFDescriptor.BRIEFSize.value);
 			
 			//Show testset rendering
-			var ts:Sprite = new Sprite();
+			/*var ts:Sprite = new Sprite();
 			ts.x = 680;
 			ts.y = 50;
 			ts.graphics.lineStyle(1);
 			BRIEFDescriptor.testset.Render(ts.graphics, 5);
-			addChild(ts);
+			addChild(ts);*/
 			
 			//addChild(new Bitmap(imgSource.GetCurrentFrame()));
 		}
@@ -95,7 +95,7 @@ package
 			inputImage = imgSource.GetCurrentFrame();
 			
 			var nbFeatures:int = Process(inputImage);
-			trace("Threshold: " + Fast9Threshold.value + " NbFeatures: " + nbFeatures);
+			//trace("Threshold: " + Fast9Threshold.value + " NbFeatures: " + nbFeatures);
 			if (Math.abs(nbFeatures - WantedFeatureCount.value) > (WantedFeatureCount.value / 8))
 			{
 				if (nbFeatures < WantedFeatureCount.value) Fast9Threshold.value--;
@@ -106,12 +106,22 @@ package
 			}
 		}
 		
+		private var panel:Sprite = null;
 		private function OnKeyDown(e:KeyboardEvent):void
 		{
 			if (e.keyCode == Keyboard.P)
 			{
-				trace("Parameters:");
-				Param.TraceAll();
+				if (panel == null)
+				{
+					panel = Param.CreateSettingPanel();
+					panel.x = WebcamResX.value;
+					addChild(panel);
+				}
+				else
+				{
+					removeChild(panel);
+					panel = null;
+				}
 			}
 		}
 		
@@ -122,7 +132,7 @@ package
 			DescribeFeatures(input, features);
 			
 			//cutoff if too many features, to avoid lag when debugging
-			if (prevFeatures != null && prevFeatures.length < 300 && features.length < 300)
+			//if (prevFeatures != null && prevFeatures.length < 300 && features.length < 300)
 			{
 				//Match previous frame features with current frame features
 				MatchBruteforce.Match(prevFeatures, features);
