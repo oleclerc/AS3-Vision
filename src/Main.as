@@ -117,9 +117,7 @@ package
 		
 		private function Process(input:BitmapData):int
 		{
-			var before:int = getTimer();
 			var features:Vector.<Feature> = DetectFeatures(input);
-			trace("Detection: " + (getTimer() - before));
 			
 			DescribeFeatures(input, features);
 			

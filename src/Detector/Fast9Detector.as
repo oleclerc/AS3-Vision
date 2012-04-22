@@ -3,6 +3,7 @@ package Detector
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.getTimer;
 	import General.Feature;
 	import General.Param;
 	/**
@@ -39,13 +40,13 @@ package Detector
 				pixels[x] = pixels[x] & 0x0000ff;
 			}
 			
+			//Make 2D vector from 1D vector
 			len = im.height;
 			for (y = 0; y < len; y++)
 			{
 				image[y] = pixels.slice(y * im.width, (y + 1) * im.width);
 				image[y].fixed = true;
 			}
-			
 			
 			var xsize:int = im.width - FAST9_BORDER.value;
 			var ysize:int = im.height - FAST9_BORDER.value;
