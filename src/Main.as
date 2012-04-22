@@ -133,13 +133,20 @@ package
 		private function RenderOverlay(features:Vector.<Feature>):void
 		{
 			overlay.graphics.clear();
-			overlay.graphics.lineStyle(1, 0xff0000);
 			for each (var f:Feature in features)
 			{
-				//overlay.graphics.drawCircle(f.pos.x, f.pos.y, f.consecutiveMatches);
-				overlay.graphics.moveTo(f.pos.x, f.pos.y);
 				if (f.match != null)
+				{
+					overlay.graphics.lineStyle(1, 0xff0000);
+					overlay.graphics.drawCircle(f.pos.x, f.pos.y, 2);
+					
+					overlay.graphics.lineStyle(2, 0xeeeeee);
+					overlay.graphics.moveTo(f.pos.x, f.pos.y);
 					overlay.graphics.lineTo(f.match.pos.x, f.match.pos.y);
+					
+					overlay.graphics.lineStyle(1, 0x00ff00);
+					overlay.graphics.drawCircle(f.match.pos.x, f.match.pos.y, 2);
+				}
 			}
 		}
 		

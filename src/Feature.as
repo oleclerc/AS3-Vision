@@ -8,6 +8,7 @@ package
 	 */
 	public class Feature 
 	{
+		public var score:int;
 		public var pos:Point;
 		public var descriptor:Descriptor;
 		public var match:Feature;
