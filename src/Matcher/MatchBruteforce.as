@@ -10,8 +10,8 @@ package Matcher
 	 */
 	public class MatchBruteforce 
 	{
-		private static var MAX_DIFFERENCE:Param = new Param("MATCH_MAX_DIFFERENCE", 16);
-		private static var MAX_DISTANCE:Param = new Param("MATCH_MAX_DISTANCE", 20);
+		private static var MAX_DIFFERENCE:Param = new Param("MATCH_MAX_DIFFERENCE", 20);
+		private static var MAX_DISTANCE:Param = new Param("MATCH_MAX_DISTANCE", 24);
 		
 		public function MatchBruteforce() 
 		{
@@ -21,13 +21,16 @@ package Matcher
 		//for every feature in listB, compute their best match from listA
 		public static function Match(listA:Vector.<Feature>, listB:Vector.<Feature>):void
 		{
+			var maxDistSquared:int = MAX_DISTANCE.value * MAX_DISTANCE.value;
 			for each (var f1:Feature in listB)
 			{
 				var bestScore:int = int.MAX_VALUE;
 				var bestMatch:Feature = null;
 				for each (var f2:Feature in listA)
 				{
-					if (Point.distance(f1.pos, f2.pos) < MAX_DISTANCE.value)
+					var diffX:int = f1.pos.x - f2.pos.x;
+					var diffY:int = f1.pos.y - f2.pos.y;
+					if (((diffX * diffX) + (diffY * diffY)) < maxDistSquared) //distance calc without squareroot
 					{
 						var difference:int = f1.descriptor.Compare(f2.descriptor);
 						if (difference < bestScore)

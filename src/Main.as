@@ -3,7 +3,9 @@ package
 	import Descriptor.BRIEFDescriptor;
 	import Detector.Fast9Detector;
 	import flash.events.KeyboardEvent;
+	import flash.filters.ColorMatrixFilter;
 	import flash.ui.Keyboard;
+	import flash.utils.getTimer;
 	import General.Feature
 	import General.Param;
 	import General.Util;
@@ -40,6 +42,7 @@ package
 		private var imgSource:SourceWebcam
 		private var inputImage:BitmapData;
 		private var overlay:Sprite;
+		private var greyscaleFilter:ColorMatrixFilter;
 		
 		private var prevFeatures:Vector.<Feature> = null;
 		
@@ -60,6 +63,13 @@ package
 			imgSource = new SourceWebcam(WebcamResX.value, WebcamResY.value, ImageWidth.value, ImageHeight.value);
 			addChild(imgSource);
 			
+			var matrix:Array = new Array();
+			matrix = matrix.concat([0.333,0.333,0.333,0,0]);
+			matrix = matrix.concat([0.333,0.333,0.333,0,0]);
+			matrix = matrix.concat([0.333,0.333,0.333,0,0]);
+			matrix = matrix.concat([0, 0, 0, 1, 0]);
+			greyscaleFilter = new ColorMatrixFilter(matrix);
+			
 			//Create overlay
 			overlay = new Sprite();
 			overlay.scaleX = WebcamResX.value / ImageWidth.value;
@@ -76,6 +86,8 @@ package
 			ts.graphics.lineStyle(1);
 			BRIEFDescriptor.testset.Render(ts.graphics, 5);
 			addChild(ts);
+			
+			//addChild(new Bitmap(imgSource.GetCurrentFrame()));
 		}
 		
 		private function OnEnterFrame(e:Event):void
@@ -105,7 +117,9 @@ package
 		
 		private function Process(input:BitmapData):int
 		{
+			var before:int = getTimer();
 			var features:Vector.<Feature> = DetectFeatures(input);
+			trace("Detection: " + (getTimer() - before));
 			
 			DescribeFeatures(input, features);
 			
@@ -137,19 +151,10 @@ package
 				throw new Error("Image must be of the right size");
 			
 			//Greyscale in blue component
-			var blueScale:BitmapData = new BitmapData(ImageWidth.value, ImageHeight.value, false);
-			for(var y:int = 0; y < ImageHeight.value; y++)
-			{	
-				for (var x:int = 0; x < ImageWidth.value; x++)
-				{
-					var pix:uint = img.getPixel(x, y);
-					pix = (((pix & 0xff0000) >> 16) + ((pix & 0x00ff00) >> 8) + (pix & 0x0000ff)) / 3;
-					blueScale.setPixel(x, y, pix);
-				}
-			}
+			img.applyFilter(img, img.rect, new Point(),  greyscaleFilter);
 			
 			//Detect
-			var features:Vector.<Feature> = Fast9Detector.Detect(blueScale, Fast9Threshold.value);
+			var features:Vector.<Feature> = Fast9Detector.Detect(img, Fast9Threshold.value);
 			return features;
 		}
 		
@@ -170,7 +175,6 @@ package
 					
 					//overlay.graphics.lineStyle(1, 0x00ff00);
 					//overlay.graphics.drawCircle(f.match.pos.x, f.match.pos.y, 2);
-					
 				}
 			}
 		}
