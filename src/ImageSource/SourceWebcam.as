@@ -13,7 +13,7 @@ package ImageSource
 	 */
 	public class SourceWebcam extends Sprite
 	{
-		private var BlurSize:Param = new Param("BlurSize", 2.5);
+		private var BlurSize:Param = new Param("BlurSize", 4);
 		private var BlurAmount:Param = new Param("BlurAmount", 2);
 		
 		private var cam:Camera;

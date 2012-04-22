@@ -6,6 +6,7 @@ package General
 	 */
 	public class Param 
 	{
+		public static var ParamList:Array = new Array();
 		
 		public var name:String;
 		public var value:Number;
@@ -14,6 +15,16 @@ package General
 		{
 			this.name = name;
 			this.value = value;
+			
+			ParamList.push(this);
+		}
+		
+		public static function TraceAll():void
+		{
+			for each (var p:Param in ParamList)
+			{
+				trace(p.name + ": " + p.value);
+			}
 		}
 		
 	}

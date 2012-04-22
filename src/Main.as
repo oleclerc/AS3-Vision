@@ -2,6 +2,8 @@ package
 {
 	import Descriptor.BRIEFDescriptor;
 	import Detector.Fast9Detector;
+	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 	import General.Feature
 	import General.Param;
 	import General.Util;
@@ -32,7 +34,7 @@ package
 		private var ImageWidth:Param = new Param("ImageWidth", 320);
 		private var ImageHeight:Param = new Param("ImageHeight", 240);
 		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40);
-		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 130);
+		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 160);
 		
 		
 		private var imgSource:SourceWebcam
@@ -52,6 +54,7 @@ package
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
 			stage.addEventListener(Event.ENTER_FRAME, OnEnterFrame);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, OnKeyDown);
 			
 			//Create image source
 			imgSource = new SourceWebcam(WebcamResX.value, WebcamResY.value, ImageWidth.value, ImageHeight.value);
@@ -73,7 +76,6 @@ package
 			ts.graphics.lineStyle(1);
 			BRIEFDescriptor.testset.Render(ts.graphics, 5);
 			addChild(ts);
-			
 		}
 		
 		private function OnEnterFrame(e:Event):void
@@ -82,13 +84,22 @@ package
 			
 			var nbFeatures:int = Process(inputImage);
 			trace("Threshold: " + Fast9Threshold.value + " NbFeatures: " + nbFeatures);
-			if (Math.abs(nbFeatures - WantedFeatureCount.value) > (WantedFeatureCount.value / 10))
+			if (Math.abs(nbFeatures - WantedFeatureCount.value) > (WantedFeatureCount.value / 8))
 			{
 				if (nbFeatures < WantedFeatureCount.value) Fast9Threshold.value--;
 				if (nbFeatures > WantedFeatureCount.value) Fast9Threshold.value++;
 				
 				if (Fast9Threshold.value < 5) Fast9Threshold.value = 5;
 				if (Fast9Threshold.value > 140) Fast9Threshold.value = 140;
+			}
+		}
+		
+		private function OnKeyDown(e:KeyboardEvent):void
+		{
+			if (e.keyCode == Keyboard.P)
+			{
+				trace("Parameters:");
+				Param.TraceAll();
 			}
 		}
 		
@@ -148,17 +159,18 @@ package
 			overlay.graphics.clear();
 			for each (var f:Feature in features)
 			{
-				if (f.match != null)
+				if (f.match != null && f.consecutiveMatches >= 2)
 				{
-					overlay.graphics.lineStyle(1, 0xff0000);
-					overlay.graphics.drawCircle(f.pos.x, f.pos.y, 2);
+					//overlay.graphics.lineStyle(1, 0xff0000);
+					//overlay.graphics.drawCircle(f.pos.x, f.pos.y, 2);
 					
-					overlay.graphics.lineStyle(2, 0xeeeeee);
+					overlay.graphics.lineStyle(1, 0x3300ff);
 					overlay.graphics.moveTo(f.pos.x, f.pos.y);
 					overlay.graphics.lineTo(f.match.pos.x, f.match.pos.y);
 					
-					overlay.graphics.lineStyle(1, 0x00ff00);
-					overlay.graphics.drawCircle(f.match.pos.x, f.match.pos.y, 2);
+					//overlay.graphics.lineStyle(1, 0x00ff00);
+					//overlay.graphics.drawCircle(f.match.pos.x, f.match.pos.y, 2);
+					
 				}
 			}
 		}

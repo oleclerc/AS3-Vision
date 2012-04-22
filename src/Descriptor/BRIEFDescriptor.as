@@ -10,7 +10,7 @@ package Descriptor
 	 */
 	public class BRIEFDescriptor 
 	{
-		public static var BRIEFSize:Param = new Param("BRIEFsize", 64);
+		public static var BRIEFSize:Param = new Param("BRIEFsize", 128);
 		public static var testset:BRIEFTestset = new BRIEFTestset();
 		
 		public var chunks:Vector.<uint>;

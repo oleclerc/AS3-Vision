@@ -9,7 +9,7 @@ package Descriptor
 	 */
 	public class BRIEFTestset 
 	{
-		private var KernelSize:Param = new Param("KernelSize", 11);
+		private var KernelSize:Param = new Param("KernelSize", 9);
 		
 		//Two lists of pixels to be compared around center (P1-P2)
 		public var testP1:Vector.<Point>;
