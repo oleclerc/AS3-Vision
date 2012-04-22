@@ -68,6 +68,8 @@ package
 			
 			//Show testset rendering
 			var ts:Sprite = new Sprite();
+			ts.x = 680;
+			ts.y = 50;
 			ts.graphics.lineStyle(1);
 			BRIEFDescriptor.testset.Render(ts.graphics, 5);
 			addChild(ts);

@@ -4,6 +4,7 @@ package Detector
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import General.Feature;
+	import General.Param;
 	/**
 	 * ...
 	 * @author Olivier Leclerc
