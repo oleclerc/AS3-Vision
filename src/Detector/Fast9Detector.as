@@ -24,20 +24,28 @@ package Detector
 			var num_corners:int = 0;
 			var ret_corners:Vector.<Feature>;
 			var x:int, y:int;
-			
+			var len:int;
 			ret_corners = new Vector.<Feature>();
 			
-			//Create 2D vector for image pixels, using only the blue channel (will work with greyscale images)
+			//Create 2D vector for image pixels, 
 			var image:Vector.<Vector.<uint>> = new Vector.<Vector.<uint>>(im.height);
-			for (y = 0; y < im.height; y++)
+			
+			//Process all pixels, keeping only the blue channel (will work with greyscale images)
+			var pixels:Vector.<uint> = im.getVector(im.rect);
+			pixels.fixed = true;
+			len = pixels.length;
+			for (x = 0; x < len; x++)
 			{
-				image[y] = new Vector.<uint>(im.width);
-				image[y].fixed = true;
-				for (x = 0; x < im.width; x++)
-				{
-					image[y][x] = im.getPixel(x, y) & 0x0000ff;
-				}
+				pixels[x] = pixels[x] & 0x0000ff;
 			}
+			
+			len = im.height;
+			for (y = 0; y < len; y++)
+			{
+				image[y] = pixels.slice(y * im.width, (y + 1) * im.width);
+				image[y].fixed = true;
+			}
+			
 			
 			var xsize:int = im.width - FAST9_BORDER.value;
 			var ysize:int = im.height - FAST9_BORDER.value;
@@ -2955,7 +2963,7 @@ package Detector
 			}
 			
 			//Calculate score for all corners
-			var len:int = ret_corners.length;
+			len = ret_corners.length;
 			for (var i:int = 0; i < len; i++)
 			{
 				ret_corners[i].score = corner_score(image, ret_corners[i].pos.x, ret_corners[i].pos.y);
