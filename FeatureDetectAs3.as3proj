@@ -6,7 +6,7 @@
     <movie input="" />
     <movie path="bin\FeatureDetectAs3.swf" />
     <movie fps="30" />
-    <movie width="800" />
+    <movie width="1000" />
     <movie height="600" />
     <movie version="11" />
     <movie minorVersion="1" />
@@ -50,7 +50,7 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <!-- example: <element path="..." /> -->
+    <element path="lib\MinimalComps_0_9_10.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

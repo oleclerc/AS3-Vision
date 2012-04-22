@@ -9,6 +9,7 @@ package
 	import General.Feature
 	import General.Param;
 	import General.Util;
+	import ImageSource.SourceVideo;
 	import Matcher.MatchBruteforce;
 	
 	import flash.display.Bitmap;
@@ -31,15 +32,17 @@ package
 	 */
 	public class Main extends Sprite 
 	{
-		private var WebcamResX:Param = new Param("WebcamResX", 640);
-		private var WebcamResY:Param = new Param("WebcamResY", 480);
-		private var ImageWidth:Param = new Param("ImageWidth", 280);
-		private var ImageHeight:Param = new Param("ImageHeight", 210);
-		private var Fast9Threshold:Param = new Param("Fast9Threshold", 40, 5, 140);
-		private var WantedFeatureCount:Param = new Param("WantedFeatureCount", 200, 20, 1000);
+		public static var WebcamResX:Param = new Param("WebcamResX", 480);
+		public static var WebcamResY:Param = new Param("WebcamResY", 360);
+		public static var ImageWidth:Param = new Param("ImageWidth", 240);
+		public static var ImageHeight:Param = new Param("ImageHeight", 180);
+		public static var Fast9Threshold:Param = new Param("Fast9Threshold", 40, 5, 140);
+		public static var WantedFeatureCount:Param = new Param("WantedFeatureCount", 200, 20, 1000);
+		public static var BlurSize:Param = new Param("CamBlurSize", 4);
+		public static var BlurAmount:Param = new Param("CamBlurAmount", 2);
 		
-		
-		private var imgSource:SourceWebcam
+		//private var imgSource:SourceWebcam;
+		private var imgSource:SourceVideo;
 		private var inputImage:BitmapData;
 		private var overlay:Sprite;
 		private var greyscaleFilter:ColorMatrixFilter;
@@ -60,7 +63,8 @@ package
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, OnKeyDown);
 			
 			//Create image source
-			imgSource = new SourceWebcam(WebcamResX.value, WebcamResY.value, ImageWidth.value, ImageHeight.value);
+			//imgSource = new SourceWebcam(WebcamResX.value, WebcamResY.value, ImageWidth.value, ImageHeight.value);
+			imgSource = new SourceVideo();
 			addChild(imgSource);
 			
 			var matrix:Array = new Array();
@@ -132,7 +136,7 @@ package
 			DescribeFeatures(input, features);
 			
 			//cutoff if too many features, to avoid lag when debugging
-			//if (prevFeatures != null && prevFeatures.length < 300 && features.length < 300)
+			if (prevFeatures != null && prevFeatures.length < 350 && features.length < 350)
 			{
 				//Match previous frame features with current frame features
 				MatchBruteforce.Match(prevFeatures, features);
@@ -174,15 +178,15 @@ package
 			{
 				if (f.match != null && f.consecutiveMatches >= 2)
 				{
-					//overlay.graphics.lineStyle(1, 0xff0000);
-					//overlay.graphics.drawCircle(f.pos.x, f.pos.y, 2);
+					overlay.graphics.lineStyle(1, 0xff0000);
+					overlay.graphics.drawCircle(f.pos.x, f.pos.y, 2);
 					
 					overlay.graphics.lineStyle(1, 0x3300ff);
 					overlay.graphics.moveTo(f.pos.x, f.pos.y);
 					overlay.graphics.lineTo(f.match.pos.x, f.match.pos.y);
 					
-					//overlay.graphics.lineStyle(1, 0x00ff00);
-					//overlay.graphics.drawCircle(f.match.pos.x, f.match.pos.y, 2);
+					overlay.graphics.lineStyle(1, 0x00ff00);
+					overlay.graphics.drawCircle(f.match.pos.x, f.match.pos.y, 2);
 				}
 			}
 		}

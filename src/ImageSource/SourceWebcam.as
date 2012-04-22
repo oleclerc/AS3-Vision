@@ -13,9 +13,6 @@ package ImageSource
 	 */
 	public class SourceWebcam extends Sprite
 	{
-		private var BlurSize:Param = new Param("BlurSize", 4);
-		private var BlurAmount:Param = new Param("BlurAmount", 2);
-		
 		private var cam:Camera;
 		private var video:Video;
 		private var scaleMatrix:Matrix;
@@ -27,7 +24,7 @@ package ImageSource
 			cam.setMode(camWidth, camHeight, 30, false);
 			video = new Video(camWidth, camHeight);
 			video.attachCamera(cam);
-			video.filters = [new BlurFilter(BlurSize.value, BlurSize.value, BlurAmount.value)];
+			video.filters = [new BlurFilter(Main.BlurSize.value, Main.BlurSize.value, Main.BlurAmount.value)];
 			
 			currentFrame = new BitmapData(scaledWidth, scaledHeight, false);
 			

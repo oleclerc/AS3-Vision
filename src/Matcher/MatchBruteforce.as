@@ -11,7 +11,7 @@ package Matcher
 	public class MatchBruteforce 
 	{
 		private static var MAX_DIFFERENCE:Param = new Param("MATCH_MAX_DIFFERENCE", 45);
-		private static var MAX_DISTANCE:Param = new Param("MATCH_MAX_DISTANCE", 25);
+		private static var MAX_DISTANCE:Param = new Param("MATCH_MAX_DISTANCE", 24);
 		
 		public function MatchBruteforce() 
 		{

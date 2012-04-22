@@ -12,7 +12,7 @@ package Detector
 	 */
 	public class Fast9Detector 
 	{
-		private static var FAST9_BORDER:Param = new Param("FAST9_Border", 5);
+		private static var FAST9_BORDER:Param = new Param("FAST9_Border", 6);
 		private static var FAST9_NONMAX:Param = new Param("FAST9_Nonmax", 1);
 		
 		public function Fast9Detector() 
